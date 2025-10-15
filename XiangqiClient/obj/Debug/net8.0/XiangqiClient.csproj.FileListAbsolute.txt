@@ -1,0 +1,15 @@
+D:\Lập Trình Mạng\XiangqiClient\bin\Debug\net8.0\XiangqiClient.exe
+D:\Lập Trình Mạng\XiangqiClient\bin\Debug\net8.0\XiangqiClient.deps.json
+D:\Lập Trình Mạng\XiangqiClient\bin\Debug\net8.0\XiangqiClient.runtimeconfig.json
+D:\Lập Trình Mạng\XiangqiClient\bin\Debug\net8.0\XiangqiClient.dll
+D:\Lập Trình Mạng\XiangqiClient\bin\Debug\net8.0\XiangqiClient.pdb
+D:\Lập Trình Mạng\XiangqiClient\obj\Debug\net8.0\XiangqiClient.GeneratedMSBuildEditorConfig.editorconfig
+D:\Lập Trình Mạng\XiangqiClient\obj\Debug\net8.0\XiangqiClient.AssemblyInfoInputs.cache
+D:\Lập Trình Mạng\XiangqiClient\obj\Debug\net8.0\XiangqiClient.AssemblyInfo.cs
+D:\Lập Trình Mạng\XiangqiClient\obj\Debug\net8.0\XiangqiClient.csproj.CoreCompileInputs.cache
+D:\Lập Trình Mạng\XiangqiClient\obj\Debug\net8.0\XiangqiClient.sourcelink.json
+D:\Lập Trình Mạng\XiangqiClient\obj\Debug\net8.0\XiangqiClient.dll
+D:\Lập Trình Mạng\XiangqiClient\obj\Debug\net8.0\refint\XiangqiClient.dll
+D:\Lập Trình Mạng\XiangqiClient\obj\Debug\net8.0\XiangqiClient.pdb
+D:\Lập Trình Mạng\XiangqiClient\obj\Debug\net8.0\XiangqiClient.genruntimeconfig.cache
+D:\Lập Trình Mạng\XiangqiClient\obj\Debug\net8.0\ref\XiangqiClient.dll
