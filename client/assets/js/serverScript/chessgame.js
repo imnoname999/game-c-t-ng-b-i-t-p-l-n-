@@ -1,41 +1,33 @@
-const ROWS = 9;
+const ROWS = 10;
 const COLS = 9;
 
-function chessgame() {
-  const GAME = [
-    xe(0,0),ma(1,0), tuongj(2,0), sy(3,0), tuongs(4,0), sy(5,0), tuongj(6,0), ma(7,0), xe(8,0),
-    phao(1,2), phao(7,2),
-    tot(0,3),tot(2,3),tot(4,3),tot(6,3),tot(8,3),
-    tot(0,3,1),tot(2,3,1),tot(4,3,1),tot(6,3,1),tot(8,3,1),
-    phao(1,2,1), phao(7,2,1),
-     xe(0,0,1),ma(1,0,1), tuongj(2,0,1), sy(3,0,1), tuongs(4,0,1), sy(5,0,1), tuongj(6,0,1), ma(7,0,1), xe(8,0,1)
-
-  ];
-let items;
-
-    let self ={};
-    function restart() {
-      items = Object.assign(GAME);
-      
-    }
-
-    self.start = function () { 
-      restart();
-    }
-  self.pause = function () {
-
-    }
-  self.end = function () { 
-
-    }
-
-    function  init () {
-      restart();
-      Object.defineProperties(self, {
-        items: {get:function(){return items }}
-      });
-        
-    }init( );
-    return self;
+function piece(type, x, y, team) {
+  return { type, x, y, team };
 }
-console.dir(new chessgame);
+
+function ChessGame() {
+  const GAME = [
+    // Đen (team=0)
+    piece("xe",0,0,0), piece("ma",1,0,0), piece("tuong",2,0,0), piece("sy",3,0,0),
+    piece("tuong_s",4,0,0), piece("sy",5,0,0), piece("tuong",6,0,0),
+    piece("ma",7,0,0), piece("xe",8,0,0),
+
+    piece("phao",1,2,0), piece("phao",7,2,0),
+    piece("tot",0,3,0), piece("tot",2,3,0), piece("tot",4,3,0), piece("tot",6,3,0), piece("tot",8,3,0),
+
+    // Đỏ (team=1)
+    piece("xe",0,9,1), piece("ma",1,9,1), piece("tuong",2,9,1), piece("sy",3,9,1),
+    piece("tuong_s",4,9,1), piece("sy",5,9,1), piece("tuong",6,9,1),
+    piece("ma",7,9,1), piece("xe",8,9,1),
+
+    piece("phao",1,7,1), piece("phao",7,7,1),
+    piece("tot",0,6,1), piece("tot",2,6,1), piece("tot",4,6,1), piece("tot",6,6,1), piece("tot",8,6,1)
+  ];
+
+  let items = [...GAME];
+
+  return {
+    start: () => items = [...GAME],
+    items
+  };
+}
