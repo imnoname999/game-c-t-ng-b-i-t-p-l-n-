@@ -17,14 +17,14 @@
 
 ### 🎯 Tính năng chính
 
-* [cite_start]**Logic Cờ Tướng:** Đã implement đầy đủ logic di chuyển chuẩn cho 7 loại quân (Tướng, Sĩ, Tượng, Xe, Pháo, Mã, Tốt) [cite: 224-560].
+* **Logic Cờ Tướng:** Đã implement đầy đủ logic di chuyển chuẩn cho 7 loại quân (Tướng, Sĩ, Tượng, Xe, Pháo, Mã, Tốt).
 * **Luật chơi nâng cao:**
-    * [cite_start]Phát hiện nước đi **Chiếu Tướng** (Check) [cite: 353-373].
-    * [cite_start]Phát hiện nước đi **Chiếu Bí** (Checkmate) [cite: 400-414] [cite_start]và thông báo người chiến thắng [cite: 769-778].
-    * [cite_start]Ngăn chặn người chơi thực hiện nước đi **Tự chiếu** (tự sát) [cite: 106-109, 251-265].
-* [cite_start]**Chơi Online 2 người:** Server có khả năng quản lý phòng chơi [cite: 24, 52-84], tự động ghép 2 người chơi vào 1 ván.
-* [cite_start]**Đồng bộ thời gian thực:** Nước đi của người này ngay lập tức được cập nhật trên màn hình của người kia [cite: 122-130, 762-787].
-* [cite_start]**Giao diện trực quan:** Hiển thị các nước đi hợp lệ (đã lọc "tự chiếu") bằng các chấm xanh khi người chơi chọn một quân [cite: 138-156, 858-875].
+    * Phát hiện nước đi **Chiếu Tướng** (Check).
+    * Phát hiện nước đi **Chiếu Bí** (Checkmate) và thông báo người chiến thắng.
+    * Ngăn chặn người chơi thực hiện nước đi **Tự chiếu** (tự sát).
+* **Chơi Online 2 người:** Server có khả năng quản lý phòng chơi, tự động ghép 2 người chơi vào 1 ván.
+* **Đồng bộ thời gian thực:** Nước đi của người này ngay lập tức được cập nhật trên màn hình của người kia.
+* **Giao diện trực quan:** Hiển thị các nước đi hợp lệ (đã lọc "tự chiếu") bằng các chấm xanh khi người chơi chọn một quân.
 
 ---
 
