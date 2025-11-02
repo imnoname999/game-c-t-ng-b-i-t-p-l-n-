@@ -74,16 +74,3 @@ Dán (paste) địa chỉ này vào cửa sổ ẩn danh. Đây là Người ch�
 
 Ngay khi tab thứ 2 kết nối, server sẽ tự động ghép cặp và game sẽ bắt đầu.
 
-📂 Cấu trúc thư mục
-
-xiangqi_online/
-├── backend/
-│   ├── venv/
-│   ├── game_logic.py   # Lõi game, luật chơi
-│   ├── server.py       # Logic server, WebSocket
-│   └── main.py         # Điểm khởi chạy server
-├── frontend/
-│   ├── index.html      # Giao diện HTML
-│   ├── style.css       # CSS trang trí
-│   └── app.js          # Logic client, kết nối server
-└── README.md
