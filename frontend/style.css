@@ -1,0 +1,129 @@
+/* file: frontend/style.css */
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+#status-bar {
+    margin: 10px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Kích thước của 1 ô (giao điểm) */
+:root {
+    --cell-size: 60px;
+}
+
+/* * Đây là phần quan trọng nhất:
+ * Container chứa 2 lớp: 
+ * 1. Lớp lưới (vẽ đường kẻ)
+ * 2. Lớp quân cờ (đặt chồng lên)
+*/
+#board-container {
+    position: relative;
+    /* 9 cột * 60px = 540px */
+    width: calc(var(--cell-size) * 9); 
+    /* 10 hàng * 60px = 600px */
+    height: calc(var(--cell-size) * 10);
+    border: 2px solid #333;
+    background-color: #f3dcb1; /* Màu bàn cờ */
+}
+
+/* Lớp lưới (Grid) để vẽ đường kẻ */
+#board-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    width: 100%;
+    height: 100%;
+}
+
+.intersection {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    /* Vẽ đường kẻ: 1px border ở bên phải và bên dưới */
+    border-right: 1px solid #555;
+    border-bottom: 1px solid #555;
+    box-sizing: border-box; /* Quan trọng để border không làm tăng kích thước */
+}
+
+/* Xóa đường kẻ thừa ở cạnh */
+.intersection:nth-child(9n) { border-right: none; } /* Cột cuối */
+.intersection:nth-last-child(-n+9) { border-bottom: none; } /* Hàng cuối */
+
+/* Lớp đặt các quân cờ (chồng lên trên lớp lưới) */
+#pieces-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Cho phép click "xuyên" qua lớp này */
+}
+
+/* --- Định nghĩa Quân cờ --- */
+.piece {
+    position: absolute;
+    width: calc(var(--cell-size) * 0.8);
+    height: calc(var(--cell-size) * 0.8);
+    
+    /* Canh giữa quân cờ vào giao điểm */
+    /* (di chuyển 50% kích thước của CHÍNH NÓ) */
+    transform: translate(-50%, -50%);
+
+    border: 2px solid #333;
+    border-radius: 50%; /* Hình tròn */
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* ================================== */
+    /* === SỬA LỖI FONT TO LÀ Ở ĐÂY === */
+    font-size: 14px; /* Sửa từ 28px xuống 20px */
+    /* ================================== */
+    
+    font-weight: bold;
+    cursor: pointer;
+    pointer-events: all; /* Quân cờ phải click được */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Quân Đỏ */
+.piece.red {
+    background-color: #ffcccc;
+    color: #d60000;
+    border-color: #d60000;
+}
+
+/* Quân Đen */
+.piece.black {
+    background-color: #e0e0e0;
+    color: #000;
+    border-color: #000;
+}
+
+/* Khi được chọn */
+.piece.selected {
+    box-shadow: 0 0 10px 5px #007bff; /* Hiệu ứng phát sáng */
+    border-color: #007bff;
+}
+
+/* Ô có thể đi (Tui sẽ thêm 1 chấm nhỏ) */
+.valid-move-dot {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: rgba(0, 123, 255, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: all; /* Chấm này cũng click được */
+    cursor: pointer;
+}

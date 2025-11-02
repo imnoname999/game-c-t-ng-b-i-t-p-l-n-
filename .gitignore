@@ -1,0 +1,16 @@
+# Bỏ qua thư mục ảo
+venv/
+
+# Bỏ cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Bỏ IDE config
+.vscode/
+.idea/
+
+# Bỏ file hệ thống
+.DS_Store
+Thumbs.db
