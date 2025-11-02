@@ -8,14 +8,12 @@ class ChessGameUI {
     canvas.width = GAME_WIDTH;
     canvas.height = GAME_HEIGHT;
 
-    this.ctx = canvas.getContext('2d');
-
-    // Khởi tạo game logic (class / function từ ChessGame.js)
-    this.game = ChessGame(); 
-
     document.body.appendChild(canvas);
+
+    this.ctx = canvas.getContext('2d');
+    this.game = ChessGame();
+    
     this.start();
-    this.update();
   }
 
   start() {
@@ -25,23 +23,21 @@ class ChessGameUI {
 
   render() {
     this.ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-    // TODO: sẽ vẽ bàn cờ + quân ở đây
+    this.drawBoard();
   }
 
-  update(){
-    this.draw();
+  drawBoard() {
+    let img = new Image();
+    img.src = IMAGES_DIR + '/ban_co.png'; // Đặt file ảnh đúng tên này
 
+    img.onload = () => {
+      this.ctx.drawImage(img, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+    };
+
+    img.onerror = () => {
+      console.log("Không load được hình bàn cờ!");
+    };
   }
-
-  draw(){
-    let img = new IMG;
-    img.src = IMAGES_DIR + '/client/assets/img/ban co.jpg';
-    img.onload = ()=> {
-        this.ctx.drawIMG(img, 0, 0, GAME_WIDTH, GAME_HEIGHT);
-    }
-
-  }
-
 }
 
 new ChessGameUI();

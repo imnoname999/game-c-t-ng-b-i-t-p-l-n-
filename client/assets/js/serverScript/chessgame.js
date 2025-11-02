@@ -27,7 +27,11 @@ function ChessGame() {
   let items = [...GAME];
 
   return {
-    start: () => items = [...GAME],
-    items
+    start() {
+      items = [...GAME];
+    },
+    getItems() {
+      return items;
+    }
   };
 }
