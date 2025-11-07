@@ -1,0 +1,11 @@
+ 🧩 Lịch sử ván đấu
+-----------------------------------
+Mã phòng: ed225da4-0d00-4510-bfc7-cd94845f993c
+Thời gian bắt đầu: 2025-11-07 20:40:24
+Thời gian kết thúc: 2025-11-07 20:40:30
+Người chơi bên Đỏ: IP (::1), cổng 58719
+Người chơi bên Đen: IP (::1), cổng 50498
+Kết quả: 🏆 Đen thắng (lý do: đối thủ rời trận)
+
+Các nước đi:
+(Không có nước đi nào được ghi lại)
