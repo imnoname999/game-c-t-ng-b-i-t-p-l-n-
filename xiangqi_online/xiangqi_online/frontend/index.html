@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cờ Tướng Online (Lập Trình Mạng)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Game Cờ Tướng Online</h1>
+    
+    <div id="status-bar">
+        <p id="status-text">Đang kết nối đến server...</p>
+    </div>
+    
+    <div id="timers-container">
+        <div id="black-timer" class="timer-display">Black: 5:00</div>
+        <button id="resign-button" style="display: none;">Đầu hàng</button>
+        <div id="red-timer" class="timer-display">Red: 5:00</div>
+    </div>
+    
+    <div id="board-container">
+        <div id="board-grid"></div>
+        <div id="pieces-layer"></div>
+    </div>
+
+    <div id="move-history-container">
+        <h3>Lịch sử nước đi</h3>
+        <ul id="move-list">
+            </ul>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

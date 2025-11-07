@@ -1,0 +1,187 @@
+/* file: frontend/style.css */
+body {
+    font-family  : Arial, sans-serif;
+    display  : flex;
+    flex-direction  : column;
+    align-items  : center;
+    background-color  : #f0f0f0;
+}
+#status-bar {
+    margin  : 10px;
+    padding  : 10px;
+    background-color  : #fff;
+    border-radius  : 5px;
+    box-shadow  : 0 2px 4px rgba(0,0,0,0.1);
+    min-height  : 1.5em; /* Giữ chiều cao ổn định */
+}
+/* ================================== */
+/* === HIỆU ỨNG BLINK KHI HẾT GIỜ === */
+/* ================================== */
+@keyframes blink  {
+    0%, 100% { opacity  : 1; }
+    50% { opacity  : 0; }
+}
+.status-blink {
+    animation  : blink 1s infinite;
+    font-weight  : bold;
+    color  : red;
+}
+/* ================================== */
+:root {
+    /* Ní có thể chỉnh kích thước bàn cờ ở đây */
+    --cell-size: 60px;
+}
+#board-container {
+    position  : relative;
+    width  : calc(var(--cell-size) * 9);
+    height  : calc(var(--cell-size) * 10);
+    border  : 2px solid #333;
+    background-color  : #f3dcb1; /* Màu bàn cờ */
+    margin-top  : 35px;
+}
+#board-grid {
+    display  : grid;
+    grid-template-columns  : repeat(9, 1fr);
+    grid-template-rows  : repeat(10, 1fr);
+    width  : 100%;
+    height  : 100%;
+}
+.intersection {
+    width  : var(--cell-size);
+    height  : var(--cell-size);
+    /* Vẽ lưới */
+    border-right  : 1px solid #555;
+    border-bottom  : 1px solid #555;
+    box-sizing  : border-box;
+}
+/* Xóa viền thừa */
+.intersection:nth-child(9n) { border-right  : none; }
+.intersection:nth-last-child(-n+9) { border-bottom  : none; }
+#pieces-layer {
+    position  : absolute;
+    top  : 0;
+    left  : 0;
+    width  : 100%;
+    height  : 100%;
+    pointer-events  : none; /* Layer này chỉ để chứa, không bắt click */
+}
+.piece {
+    position  : absolute;
+    width  : calc(var(--cell-size) * 0.8);
+    height  : calc(var(--cell-size) * 0.8);
+    transform  : translate(-50%, -50%); /* Căn quân cờ vào giữa giao điểm */
+    border  : 2px solid #333;
+    border-radius  : 50%;
+    display  : flex;
+    justify-content  : center;
+    align-items  : center;
+    font-size  : 14px;
+    font-weight  : bold;
+    cursor  : pointer;
+    pointer-events  : all; /* Quân cờ BẮT click */
+    box-shadow  : 0 2px 4px rgba(0,0,0,0.2);
+}
+.piece.red {
+    background-color  : #ffcccc;
+    color  : #d60000;
+    border-color  : #d60000;
+}
+.piece.black {
+    background-color  : #e0e0e0;
+    color  : #000;
+    border-color  : #000;
+}
+/* Khi quân cờ được chọn */
+.piece.selected {
+    box-shadow  : 0 0 10px 5px #007bff; /* Highlight màu xanh */
+    border-color  : #007bff;
+}
+/* Chấm gợi ý nước đi */
+.valid-move-dot {
+    position  : absolute;
+    width  : 15px;
+    height  : 15px;
+    background-color  : rgba(0, 123, 255, 0.5);
+    border-radius  : 50%;
+    transform  : translate(-50%, -50%);
+    pointer-events  : all; /* Chấm này BẮT click */
+    cursor  : pointer;
+}
+/* --- Đồng hồ (ĐÃ SỬA) --- */
+#timers-container {
+    display  : flex;
+    justify-content  : space-between;
+    width  : calc(var(--cell-size) * 9);
+    margin-bottom  : 10px;
+    align-items  : center; /* <-- THÊM DÒNG NÀY để căn giữa nút */
+}
+.timer-display {
+    padding  : 8px 15px;
+    font-size  : 1.2em;
+    font-weight  : bold;
+    border-radius  : 5px;
+    background-color  : #e0e0e0;
+    color  : #333;
+    border  : 2px solid #ccc;
+}
+/* Khi tới lượt */
+.timer-display.active-turn {
+    border-color  : #007bff;
+    background-color  : #fff;
+    box-shadow  : 0 0 10px rgba(0,123,255,0.5);
+}
+/* --- Lịch sử nước đi --- */
+#move-history-container {
+    margin-top  : 15px;
+    text-align  : left;
+    width  : calc(var(--cell-size) * 9); /* Rộng bằng bàn cờ */
+    max-height  : 200px; /* Giới hạn chiều cao */
+    overflow-y  : auto; /* Thêm thanh cuộn */
+    background  : #fff;
+    padding  : 10px;
+    border-radius  : 8px;
+    box-shadow  : 0 2px 4px rgba(0,0,0,0.1);
+    box-sizing  : border-box;
+}
+#move-history-container h3 {
+    margin-top  : 0;
+    margin-bottom  : 10px;
+    border-bottom  : 1px solid #eee;
+    padding-bottom  : 5px;
+}
+#move-list {
+    list-style-type  : decimal; /* Đánh số 1. 2. 3. */
+    padding-left  : 20px;
+    margin  : 0;
+    font-size  : 0.9em;
+}
+#move-list li {
+    padding  : 2px 0;
+}
+#move-list li.red-move {
+    color  : #d60000;
+}
+#move-list li.black-move {
+    color  : #000;
+}
+
+/* *** CSS ĐÃ SỬA *** */
+
+/* XÓA block CSS cho #game-controls */
+
+#resign-button {
+    padding  : 8px 16px;
+    font-size  : 1em;
+    font-weight  : bold;
+    color  : #fff;
+    background-color  : #dc3545; /* Màu đỏ */
+    border  : none;
+    border-radius  : 5px;
+    cursor  : pointer;
+    box-shadow  : 0 2px 4px rgba(0,0,0,0.2);
+    /* XÓA margin-bottom và margin-top */
+}
+#resign-button:hover {
+    background-color  : #c82333; /* Đỏ đậm hơn */
+}
+/* ********************** */
