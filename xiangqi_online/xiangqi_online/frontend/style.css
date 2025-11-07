@@ -1,187 +1,295 @@
-/* file: frontend/style.css */
-body {
-    font-family  : Arial, sans-serif;
-    display  : flex;
-    flex-direction  : column;
-    align-items  : center;
-    background-color  : #f0f0f0;
-}
-#status-bar {
-    margin  : 10px;
-    padding  : 10px;
-    background-color  : #fff;
-    border-radius  : 5px;
-    box-shadow  : 0 2px 4px rgba(0,0,0,0.1);
-    min-height  : 1.5em; /* Giữ chiều cao ổn định */
-}
-/* ================================== */
-/* === HIỆU ỨNG BLINK KHI HẾT GIỜ === */
-/* ================================== */
-@keyframes blink  {
-    0%, 100% { opacity  : 1; }
-    50% { opacity  : 0; }
-}
-.status-blink {
-    animation  : blink 1s infinite;
-    font-weight  : bold;
-    color  : red;
-}
-/* ================================== */
-:root {
-    /* Ní có thể chỉnh kích thước bàn cờ ở đây */
-    --cell-size: 60px;
-}
-#board-container {
-    position  : relative;
-    width  : calc(var(--cell-size) * 9);
-    height  : calc(var(--cell-size) * 10);
-    border  : 2px solid #333;
-    background-color  : #f3dcb1; /* Màu bàn cờ */
-    margin-top  : 35px;
-}
-#board-grid {
-    display  : grid;
-    grid-template-columns  : repeat(9, 1fr);
-    grid-template-rows  : repeat(10, 1fr);
-    width  : 100%;
-    height  : 100%;
-}
-.intersection {
-    width  : var(--cell-size);
-    height  : var(--cell-size);
-    /* Vẽ lưới */
-    border-right  : 1px solid #555;
-    border-bottom  : 1px solid #555;
-    box-sizing  : border-box;
-}
-/* Xóa viền thừa */
-.intersection:nth-child(9n) { border-right  : none; }
-.intersection:nth-last-child(-n+9) { border-bottom  : none; }
-#pieces-layer {
-    position  : absolute;
-    top  : 0;
-    left  : 0;
-    width  : 100%;
-    height  : 100%;
-    pointer-events  : none; /* Layer này chỉ để chứa, không bắt click */
-}
-.piece {
-    position  : absolute;
-    width  : calc(var(--cell-size) * 0.8);
-    height  : calc(var(--cell-size) * 0.8);
-    transform  : translate(-50%, -50%); /* Căn quân cờ vào giữa giao điểm */
-    border  : 2px solid #333;
-    border-radius  : 50%;
-    display  : flex;
-    justify-content  : center;
-    align-items  : center;
-    font-size  : 14px;
-    font-weight  : bold;
-    cursor  : pointer;
-    pointer-events  : all; /* Quân cờ BẮT click */
-    box-shadow  : 0 2px 4px rgba(0,0,0,0.2);
-}
-.piece.red {
-    background-color  : #ffcccc;
-    color  : #d60000;
-    border-color  : #d60000;
-}
-.piece.black {
-    background-color  : #e0e0e0;
-    color  : #000;
-    border-color  : #000;
-}
-/* Khi quân cờ được chọn */
-.piece.selected {
-    box-shadow  : 0 0 10px 5px #007bff; /* Highlight màu xanh */
-    border-color  : #007bff;
-}
-/* Chấm gợi ý nước đi */
-.valid-move-dot {
-    position  : absolute;
-    width  : 15px;
-    height  : 15px;
-    background-color  : rgba(0, 123, 255, 0.5);
-    border-radius  : 50%;
-    transform  : translate(-50%, -50%);
-    pointer-events  : all; /* Chấm này BẮT click */
-    cursor  : pointer;
-}
-/* --- Đồng hồ (ĐÃ SỬA) --- */
-#timers-container {
-    display  : flex;
-    justify-content  : space-between;
-    width  : calc(var(--cell-size) * 9);
-    margin-bottom  : 10px;
-    align-items  : center; /* <-- THÊM DÒNG NÀY để căn giữa nút */
-}
-.timer-display {
-    padding  : 8px 15px;
-    font-size  : 1.2em;
-    font-weight  : bold;
-    border-radius  : 5px;
-    background-color  : #e0e0e0;
-    color  : #333;
-    border  : 2px solid #ccc;
-}
-/* Khi tới lượt */
-.timer-display.active-turn {
-    border-color  : #007bff;
-    background-color  : #fff;
-    box-shadow  : 0 0 10px rgba(0,123,255,0.5);
-}
-/* --- Lịch sử nước đi --- */
-#move-history-container {
-    margin-top  : 15px;
-    text-align  : left;
-    width  : calc(var(--cell-size) * 9); /* Rộng bằng bàn cờ */
-    max-height  : 200px; /* Giới hạn chiều cao */
-    overflow-y  : auto; /* Thêm thanh cuộn */
-    background  : #fff;
-    padding  : 10px;
-    border-radius  : 8px;
-    box-shadow  : 0 2px 4px rgba(0,0,0,0.1);
-    box-sizing  : border-box;
-}
-#move-history-container h3 {
-    margin-top  : 0;
-    margin-bottom  : 10px;
-    border-bottom  : 1px solid #eee;
-    padding-bottom  : 5px;
-}
-#move-list {
-    list-style-type  : decimal; /* Đánh số 1. 2. 3. */
-    padding-left  : 20px;
-    margin  : 0;
-    font-size  : 0.9em;
-}
-#move-list li {
-    padding  : 2px 0;
-}
-#move-list li.red-move {
-    color  : #d60000;
-}
-#move-list li.black-move {
-    color  : #000;
-}
+/* 🎨 style.css — Bản cải tiến bàn cờ Cấp 2 */ 
+/* ---------------------------------------- */ 
+body { 
+    font-family: "Segoe UI", Arial, sans-serif; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    background: radial-gradient(circle at top, #f8e1a1, #e0c48b); 
+    margin: 0; 
+    padding: 20px; 
+} 
 
-/* *** CSS ĐÃ SỬA *** */
+h1 { 
+    margin-bottom: 10px; 
+    color: #6b3e1f; 
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2); 
+} 
 
-/* XÓA block CSS cho #game-controls */
+#status-bar { 
+    margin: 10px; 
+    padding: 10px 20px; 
+    background-color: #fff; 
+    border-radius: 6px; 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2); 
+    min-height: 1.5em; 
+    color: #333; 
+} 
 
-#resign-button {
-    padding  : 8px 16px;
-    font-size  : 1em;
-    font-weight  : bold;
-    color  : #fff;
-    background-color  : #dc3545; /* Màu đỏ */
-    border  : none;
-    border-radius  : 5px;
-    cursor  : pointer;
-    box-shadow  : 0 2px 4px rgba(0,0,0,0.2);
-    /* XÓA margin-bottom và margin-top */
-}
-#resign-button:hover {
-    background-color  : #c82333; /* Đỏ đậm hơn */
-}
-/* ********************** */
+/* Blink khi hết giờ */ 
+@keyframes blink { 
+    0%, 100% { opacity: 1; } 
+    50% { opacity: 0; } 
+} 
+.status-blink { 
+    animation: blink 1s infinite; 
+    font-weight: bold; 
+    color: red; 
+} 
+
+/* ---------------------------------------- */ 
+/* Bàn cờ */ 
+:root { --cell-size: 60px; } 
+
+#board-container { 
+    position: relative; 
+    width: calc(var(--cell-size) * 9); 
+    height: calc(var(--cell-size) * 10); 
+    border: 3px solid #5c3b1e; 
+    background-color: #f9e4b7; 
+    background-image: linear-gradient(45deg, rgba(255,255,255,0.2), rgba(0,0,0,0.05)); 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3); 
+    border-radius: 10px; 
+    overflow: hidden; 
+} 
+
+/* “Sông” giữa bàn cờ */ 
+#board-container::before { 
+    content: "楚 河 漢 界"; 
+    position: absolute; 
+    top: 50%; 
+    left: 0; 
+    width: 100%; 
+    height: var(--cell-size); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    color: #a74a2a; 
+    font-weight: bold; 
+    font-size: 24px; 
+    font-family: "KaiTi", "SimSun", serif; 
+    background: linear-gradient(to bottom, #f9e4b7 40%, #f4d59e 60%); 
+    border-top: 2px solid #5c3b1e; 
+    border-bottom: 2px solid #5c3b1e; 
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); 
+} 
+
+#board-grid { 
+    display: grid; 
+    grid-template-columns: repeat(9, 1fr); 
+    grid-template-rows: repeat(10, 1fr); 
+    width: 100%; 
+    height: 100%; 
+} 
+
+/* Giao điểm bàn cờ */ 
+.intersection { 
+    width: var(--cell-size); 
+    height: var(--cell-size); 
+    border-right: 1px solid #5c3b1e; 
+    border-bottom: 1px solid #5c3b1e; 
+    box-sizing: border-box; 
+} 
+.intersection:nth-child(9n) { border-right: none; } 
+.intersection:nth-last-child(-n+9) { border-bottom: none; } 
+
+/* Vẽ thêm viền trên và trái để khung đẹp hơn */ 
+#board-grid::before, #board-grid::after { 
+    content: ""; 
+    position: absolute; 
+    background: #5c3b1e; 
+} 
+#board-grid::before { top: 0; left: 0; width: 100%; height: 1px; } 
+#board-grid::after { top: 0; left: 0; width: 1px; height: 100%; } 
+
+/* Layer chứa quân cờ */ 
+#pieces-layer { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    pointer-events: none; 
+} 
+
+/* ---------------------------------------- */ 
+/* Quân cờ */ 
+.piece { 
+    position: absolute; 
+    width: calc(var(--cell-size) * 0.8); 
+    height: calc(var(--cell-size) * 0.8); 
+    transform: translate(-50%, -50%); 
+    border-radius: 50%; 
+    border: 3px solid #5c3b1e; 
+    background: radial-gradient(circle at top left, #fff, #e6d6a8); 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
+    font-size: 20px; 
+    font-weight: bold; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    cursor: pointer; 
+    pointer-events: all; 
+    transition: transform 0.1s ease, box-shadow 0.2s; 
+} 
+.piece.red { 
+    color: #b00; 
+    border-color: #b00; 
+    background: radial-gradient(circle at top left, #fff, #f8caca); 
+} 
+.piece.black { 
+    color: #222; 
+    border-color: #222; 
+    background: radial-gradient(circle at top left, #fff, #dcdcdc); 
+} 
+
+/* Khi quân cờ được chọn */ 
+.piece.selected { 
+    transform: translate(-50%, -50%) scale(1.1); 
+    box-shadow: 0 0 15px 5px #007bff; 
+    z-index: 10; 
+} 
+
+/* ---------------------------------------- */ 
+/* Chấm gợi ý nước đi */ 
+.valid-move-dot { 
+    position: absolute; 
+    width: 15px; 
+    height: 15px; 
+    background-color: rgba(0, 123, 255, 0.6); 
+    border-radius: 50%; 
+    transform: translate(-50%, -50%); 
+    pointer-events: all; 
+    cursor: pointer; 
+    box-shadow: 0 0 5px rgba(0,123,255,0.8); 
+} 
+
+/* ---------------------------------------- */ 
+/* Đồng hồ */ 
+#timers-container { 
+    display: flex; 
+    justify-content: space-between; 
+    width: calc(var(--cell-size) * 9); 
+    margin-bottom: 10px; 
+    align-items: center; 
+} 
+.timer-display { 
+    padding: 8px 15px; 
+    font-size: 1.1em; 
+    font-weight: bold; 
+    border-radius: 5px; 
+    background-color: #fff8e5; 
+    color: #333; 
+    border: 2px solid #8b5a2b; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+} 
+.timer-display.active-turn { 
+    border-color: #007bff; 
+    background-color: #fff; 
+    box-shadow: 0 0 10px rgba(0,123,255,0.5); 
+} 
+
+/* Nút đầu hàng */ 
+#resign-button { 
+    padding: 8px 16px; 
+    font-size: 1em; 
+    font-weight: bold; 
+    color: #fff; 
+    background-color: #c0392b; 
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3); 
+    transition: background-color 0.2s; 
+} 
+#resign-button:hover { 
+    background-color: #a5281f; 
+} 
+
+/* ---------------------------------------- */ 
+/* Lịch sử nước đi */ 
+#move-history-container { 
+    margin-top: 20px; 
+    text-align: left; 
+    width: calc(var(--cell-size) * 9); 
+    max-height: 200px; 
+    overflow-y: auto; 
+    background: #fff; 
+    padding: 10px; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+} 
+#move-history-container h3 { 
+    margin-top: 0; 
+    margin-bottom: 10px; 
+    border-bottom: 1px solid #eee; 
+    padding-bottom: 5px; 
+    color: #6b3e1f; 
+} 
+#move-list { 
+    list-style-type: decimal; 
+    padding-left: 20px; 
+    margin: 0; 
+    font-size: 0.9em; 
+} 
+#move-list li { padding: 2px 0; } 
+#move-list li.red-move { color: #b00; } 
+#move-list li.black-move { color: #000; } 
+
+/* --- BẢN FIX KÍCH THƯỚC BÀN CỜ & QUÂN CỜ --- */ 
+/* Giảm một chút kích thước ô để quân vừa khít */ 
+:root { --cell-size: 64px; } 
+
+/* Bỏ overflow: hidden để không cắt viền quân */ 
+#board-container { 
+    position: relative; 
+    width: calc(var(--cell-size) * 9); 
+    height: calc(var(--cell-size) * 10); 
+    border: 3px solid #5c3b1e; 
+    background-color: #f9e4b7; 
+    background-image: linear-gradient(45deg, rgba(255,255,255,0.2), rgba(0,0,0,0.05)); 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3); 
+    border-radius: 10px; 
+    overflow: visible; 
+} 
+
+/* Quân cờ chỉnh lại tỷ lệ và viền nhỏ hơn */ 
+.piece { 
+    position: absolute; 
+    width: calc(var(--cell-size) * 0.72); 
+    height: calc(var(--cell-size) * 0.72); 
+    transform: translate(-50%, -50%); 
+    border-radius: 50%; 
+    border: 2px solid #5c3b1e; 
+    background: radial-gradient(circle at top left, #fff, #e6d6a8); 
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3); 
+    font-size: 18px; 
+    font-weight: bold; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    cursor: pointer; 
+    pointer-events: all; 
+    transition: transform 0.1s ease, box-shadow 0.2s; 
+    z-index: 2; 
+} 
+
+/* Khi chọn, quân nổi bật hơn nhưng không to quá */ 
+.piece.selected { 
+    transform: translate(-50%, -50%) scale(1.05); 
+    box-shadow: 0 0 12px 4px #007bff; 
+    z-index: 5; 
+} 
+
+/* Chấm nước đi giữ nguyên */ 
+.valid-move-dot { 
+    position: absolute; 
+    width: 14px; 
+    height: 14px; 
+    background-color: rgba(0, 123, 255, 0.7); 
+    border-radius: 50%; 
+    transform: translate(-50%, -50%); 
+    pointer-events: all; 
+    cursor: pointer; 
+    box-shadow: 0 0 6px rgba(0,123,255,0.8); 
+} 

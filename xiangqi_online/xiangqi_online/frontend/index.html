@@ -7,29 +7,33 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Game Cờ Tướng Online</h1>
-    
+    <h1>🎮 Game Cờ Tướng Online</h1>
+
+    <!-- Thanh trạng thái kết nối -->
     <div id="status-bar">
-        <p id="status-text">Đang kết nối đến server...</p>
+        <p id="status-text">🔄 Đang kết nối đến server...</p>
     </div>
-    
+
+    <!-- Bộ đếm thời gian và nút đầu hàng -->
     <div id="timers-container">
         <div id="black-timer" class="timer-display">Black: 5:00</div>
         <button id="resign-button" style="display: none;">Đầu hàng</button>
         <div id="red-timer" class="timer-display">Red: 5:00</div>
     </div>
-    
+
+    <!-- Bàn cờ -->
     <div id="board-container">
         <div id="board-grid"></div>
         <div id="pieces-layer"></div>
     </div>
 
+    <!-- Lịch sử nước đi -->
     <div id="move-history-container">
-        <h3>Lịch sử nước đi</h3>
-        <ul id="move-list">
-            </ul>
+        <h3>📜 Lịch sử nước đi</h3>
+        <ul id="move-list"></ul>
     </div>
-    
+
+    <!-- Nạp script -->
     <script src="app.js"></script>
 </body>
 </html>
