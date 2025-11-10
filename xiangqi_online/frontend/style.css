@@ -1,0 +1,220 @@
+/* file: frontend/style.css */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+#status-bar {
+    margin: 10px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-height: 1.5em; /* Giữ chiều cao ổn định */
+}
+/* ================================== */
+/* === HIỆU ỨNG BLINK KHI HẾT GIỜ === */
+/* ================================== */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+.status-blink {
+    animation: blink 1s infinite;
+    font-weight: bold;
+    color: red;
+}
+/* ================================== */
+:root {
+    /* Ní có thể chỉnh kích thước bàn cờ ở đây */
+    --cell-size: 60px;
+}
+#board-container {
+    position: relative;
+    width: calc(var(--cell-size) * 9);
+    height: calc(var(--cell-size) * 10);
+    border: 2px solid #333;
+    background-color: #f3dcb1; /* Màu bàn cờ */
+    margin-top: 35px;
+}
+#board-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    width: 100%;
+    height: 100%;
+}
+.intersection {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    /* Vẽ lưới */
+    border-right: 1px solid #555;
+    border-bottom: 1px solid #555;
+    box-sizing: border-box;
+}
+/* Xóa viền thừa */
+.intersection:nth-child(9n) { border-right: none; }
+.intersection:nth-last-child(-n+9) { border-bottom: none; }
+#pieces-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Layer này chỉ để chứa, không bắt click */
+}
+
+/* === (ĐÃ SỬA) Thay thế class .piece === */
+/* Xóa bỏ border, background, font-size, và các thuộc tính text */
+.piece {
+    position: absolute;
+    /* Dùng 90% kích thước ô (60px * 0.9 = 54px) */
+    width: calc(var(--cell-size) * 0.9);
+    
+    /* Tính chiều cao dựa trên tỉ lệ 100x90 (Width * 0.9)
+       (60px * 0.9) * 0.9 = 48.6px 
+    */
+    height: calc(var(--cell-size) * 0.9 * 0.9);
+    
+    /* Căn giữa vào giao điểm (giữ nguyên) */
+    transform: translate(-50%, -50%); 
+    cursor: pointer;
+    pointer-events: all; /* Quân cờ BẮT click (giữ nguyên) */
+    
+    /* --- Thuộc tính mới cho hình ảnh --- */
+    background-size: 100% 100%; /* Kéo hình vừa khít 54x48.6px */
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* === (ĐÃ XÓA) class .piece.red và .piece.black === */
+/* (Không cần nữa) */
+
+
+/* Khi quân cờ được chọn (ĐÃ SỬA) */
+.piece.selected {
+    box-shadow: 0 0 10px 5px #007bff; /* Highlight màu xanh */
+    /* Thêm 1 chút border để nó nổi bật hơn */
+    border: 2px solid #007bff; 
+    box-sizing: border-box; /* Ngăn border làm thay đổi kích thước */
+}
+
+/* === (ĐÃ THÊM) 14 class cho 14 hình ảnh === */
+/* (Các đường dẫn url() giả định file ảnh nằm chung thư mục frontend/) */
+
+/* --- Xe (Rook) --- */
+.xe_r { background-image: url('images/xe_r.png'); }
+.xe_b { background-image: url('images/xe_b.png'); }
+
+/* --- Mã (Knight) --- */
+.ma_r { background-image: url('images/ma_r.png'); }
+.ma_b { background-image: url('images/ma_b.png'); }
+
+/* --- Pháo (Cannon) --- */
+.phao_r { background-image: url('images/phao_r.png'); }
+.phao_b { background-image: url('images/phao_b.png'); }
+
+/* --- Tượng/Tịnh (Elephant) --- */
+.tinh_r { background-image: url('images/tinh_r.png'); }
+.tinh_b { background-image: url('images/tinh_b.png'); }
+
+/* --- Sĩ (Advisor) --- */
+.sy_r { background-image: url('images/sy_r.png'); }
+.sy_b { background-image: url('images/sy_b.png'); }
+
+/* --- Tướng (General) --- */
+.tuong_r { background-image: url('images/tuong_r.png'); }
+.tuong_b { background-image: url('images/tuong_b.png'); }
+
+/* --- Tốt (Pawn) --- */
+.tot_r { background-image: url('images/tot_r.png'); }
+.tot_b { background-image: url('images/tot_b.png'); }
+
+
+/* Chấm gợi ý nước đi (Giữ nguyên) */
+.valid-move-dot {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: rgba(0, 123, 255, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: all; /* Chấm này BẮT click */
+    cursor: pointer;
+}
+/* --- Đồng hồ (Giữ nguyên) --- */
+#timers-container {
+    display: flex;
+    justify-content: space-between;
+    width: calc(var(--cell-size) * 9);
+    margin-bottom: 10px;
+    align-items: center; 
+}
+.timer-display {
+    padding: 8px 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 5px;
+    background-color: #e0e0e0;
+    color: #333;
+    border: 2px solid #ccc;
+}
+/* Khi tới lượt */
+.timer-display.active-turn {
+    border-color: #007bff;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,123,255,0.5);
+}
+/* --- Lịch sử nước đi (Giữ nguyên) --- */
+#move-history-container {
+    margin-top: 15px;
+    text-align: left;
+    width: calc(var(--cell-size) * 9); /* Rộng bằng bàn cờ */
+    max-height: 200px; /* Giới hạn chiều cao */
+    overflow-y: auto; /* Thêm thanh cuộn */
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+#move-history-container h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+#move-list {
+    list-style-type: decimal; /* Đánh số 1. 2. 3. */
+    padding-left: 20px;
+    margin: 0;
+    font-size: 0.9em;
+}
+#move-list li {
+    padding: 2px 0;
+}
+#move-list li.red-move {
+    color: #d60000;
+}
+#move-list li.black-move {
+    color: #000;
+}
+
+/* Nút đầu hàng (Giữ nguyên) */
+#resign-button {
+    padding: 8px 16px;
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #dc3545; /* Màu đỏ */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+#resign-button:hover {
+    background-color: #c82333; /* Đỏ đậm hơn */
+}
+/* ********************** */
