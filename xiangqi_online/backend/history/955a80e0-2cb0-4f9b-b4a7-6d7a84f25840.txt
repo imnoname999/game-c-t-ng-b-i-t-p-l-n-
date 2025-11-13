@@ -1,0 +1,12 @@
+ 🧩 Lịch sử ván đấu
+-----------------------------------
+Mã phòng: 955a80e0-2cb0-4f9b-b4a7-6d7a84f25840
+Thời gian bắt đầu: 2025-11-13 12:28:15
+Thời gian kết thúc: 2025-11-13 12:28:34
+Người chơi bên Đỏ: IP (::1), cổng 51651
+Người chơi bên Đen: IP (::1), cổng 57391
+Kết quả: 🏆 Đen thắng (lý do: đối thủ rời trận)
+
+Các nước đi:
+1️⃣ Đỏ đi từ (6, 0) → (5, 0)
+2️⃣ Đen đi từ (3, 2) → (4, 2)
