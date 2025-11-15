@@ -1,4 +1,4 @@
-// file: frontend/app.js (Đã sửa để thêm nút Đầu hàng VÀ fix delay)
+// file: frontend/app.js
 // --- 1. Khởi tạo kết nối và DOM Elements ---
 const ws = new WebSocket("ws://localhost:8765");
 const statusText = document.getElementById("status-text");
@@ -9,6 +9,7 @@ const redTimerDisplay = document.getElementById("red-timer");
 const blackTimerDisplay = document.getElementById("black-timer");
 const moveList = document.getElementById("move-list");
 const resignButton = document.getElementById("resign-button");
+
 // --- 2. Biến trạng thái Client ---
 let clientTimerInterval = null;
 let localGameState = {
@@ -21,6 +22,11 @@ let currentTurn = null;
 let selectedPiecePos = null;
 let currentBoardState = [];
 let validMoveDots = [];
+// ===================================
+// === THÊM BIẾN CỜ (FLAG) MỚI ===
+// ===================================
+let isGameOver = false; // Biến này ngăn hàm handleGameOver chạy 2 lần
+// ===================================
 
 // Map tên quân cờ (server) sang TÊN FILE (client)
 const pieceImageMap = {
@@ -39,6 +45,7 @@ function formatTime(seconds) {
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
+
 // Cập nhật UI đồng hồ
 function updateTimerUI() {
     redTimerDisplay.innerText = `Red: ${formatTime(localGameState.red_time)}`;
@@ -53,6 +60,7 @@ function updateTimerUI() {
         blackTimerDisplay.classList.add('active-turn');
     }
 }
+
 // Đồng bộ thời gian từ server (khi bắt đầu, hoặc sau 1 nước đi)
 function syncTimersFromServer(data) {
     localGameState.red_time = data.red_time;
@@ -62,6 +70,7 @@ function syncTimersFromServer(data) {
     startClientTimer(); // Bắt đầu/Reset lại interval
     updateTimerUI(); // Cập nhật UI ngay
 }
+
 // Chạy interval ở client để đồng hồ chạy mượt
 function startClientTimer() {
     // Xóa interval cũ (nếu có)
@@ -81,6 +90,7 @@ function startClientTimer() {
         }, 100); // Cập nhật 10 lần/giây
     }
 }
+
 // --- 4. Xử lý Trạng thái Game (Status, History) ---
 // Thêm nước đi vào list UI
 function addMoveToHistory(fromPos, toPos, color) {
@@ -95,18 +105,31 @@ function addMoveToHistory(fromPos, toPos, color) {
 }
 
 // ===============================================
-// === HÀM handleGameOver (ĐÃ SỬA LẠI LOGIC DELAY) ===
+// === HÀM handleGameOver (BẢN FIX "BẤT TỬ") ===
 // ===============================================
 // Xử lý khi game KẾT THÚC
 function handleGameOver(winner, reason) {
+    // === FIX 1: DÙNG BIẾN CỜ ĐỂ CHẶN CHẠY 2 LẦN ===
+    if (isGameOver) {
+        console.warn("handleGameOver đã chạy, chặn lần gọi thứ 2.");
+        return;
+    }
+    // === FIX 2 (CỦA NÍ): CHẶN NẾU ĐÃ KẾT THÚC ===
+    // (Kết hợp cả 2 cho chắc)
+    if (localGameState.turn === null && reason !== "disconnect") {
+        console.warn("Đã xử lý 'game_over', bỏ qua tin nhắn thứ hai.");
+        return;
+    }
+
+    isGameOver = true; // ĐÁNH DẤU LÀ ĐÃ KẾT THÚC
+    // ------------------------------------
     // 1. Dừng game, timer, ẩn nút
     currentTurn = null;
     localGameState.turn = null;
-    startClientTimer(); // Sẽ dừng interval
+    startClientTimer(); // Dừng interval
     redTimerDisplay.classList.remove('active-turn');
     blackTimerDisplay.classList.remove('active-turn');
     resignButton.style.display = "none";
-
     // 2. Tạo tin nhắn kết quả
     let statusMessage = "";
     if (reason === "checkmate") {
@@ -124,46 +147,36 @@ function handleGameOver(winner, reason) {
     } else if (reason === "disconnect") {
         statusMessage = "Mất kết nối server.";
     }
-
-    // 3. Hiển thị tin nhắn kết quả (VD: "BẠN THẮNG!")
+    // 3. Hiển thị tin nhắn kết quả
     statusText.innerText = statusMessage;
     // BẬT nhấp nháy
     statusText.classList.add('status-blink');
-
     // 4. Nếu rớt mạng thì không tìm trận mới
     if (reason === "disconnect") {
         return;
     }
-
-    // 5. Lên lịch đếm ngược 12 GIÂY (đã fix lại logic)
-    const initialWait = 6000; // 6 giây (để người dùng đọc "Bạn thắng!")
-    const countdownSeconds = 6; // 6 giây (đếm ngược "Tìm trận sau...")
-
-    let countdown = countdownSeconds; // Bắt đầu đếm từ 6
-
-    // 5.1. Chờ 6 giây (trong lúc đó "Bạn thắng" đang nhấp nháy)...
+    // 5. LÊN LỊCH ĐẾM NGƯỢC 12 GIÂY (THEO Ý NÍ)
+    const initialWait = 6000;  // 6 giây xem kết quả
+    const countdownSeconds = 6;  // 6 giây đếm ngược
+    let countdown = countdownSeconds;
+    // 5.1. Chờ 10 giây...
     setTimeout(() => {
-        
-        // 5.2. ...sau 6 giây, TẮT nhấp nháy
-        statusText.classList.remove('status-blink'); 
-
-        // 5.3. Bắt đầu đếm ngược 6 giây
-        statusText.innerText = `Tìm trận mới sau ${countdown}s...`; // Chỉ hiện đếm ngược
-
+        // 5.2. ...TẮT nhấp nháy
+        statusText.classList.remove('status-blink');
+        // 5.3. Bắt đầu đếm ngược 10 giây
+        statusText.innerText = `Tìm trận mới sau ${countdown}s...`;
         const countdownInterval = setInterval(() => {
             countdown--;
             if (countdown > 0) {
-                // Cập nhật đếm ngược (5, 4, 3, 2, 1)
                 statusText.innerText = `Tìm trận mới sau ${countdown}s...`;
             } else {
-                // Hết 6 giây đếm ngược
+                // Hết 10 giây đếm ngược
                 clearInterval(countdownInterval);
                 statusText.innerText = "Đang tìm trận mới...";
                 window.location.reload(); // Tải lại trang
             }
-        }, 1000); // 1 giây một lần
-
-    }, initialWait); // Chờ 6 giây
+        }, 1000);
+    }, initialWait);
 }
 // ===============================================
 // ===============================================
@@ -185,7 +198,7 @@ function updateStatusText() {
     }
 }
 
-// *** CHỖ SỬA 2: Thêm hàm xử lý click nút Đầu hàng ***
+// *** Xử lý click nút Đầu hàng ***
 function onResignClick() {
     // Chỉ chạy nếu game đang diễn ra (myColor đã được set)
     if (myColor && currentTurn !== null) {
@@ -195,13 +208,13 @@ function onResignClick() {
     }
 }
 resignButton.addEventListener('click', onResignClick);
-// *****************************************************
 
 // --- 5. Lắng nghe WebSocket Events ---
 ws.onopen = () => {
     console.log("Đã kết nối tới server WebSocket.");
     statusText.innerText = "Đang chờ người chơi khác...";
 };
+
 ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
     console.log("Nhận tin từ server:", data);
@@ -210,15 +223,13 @@ ws.onmessage = (event) => {
             statusText.innerText = data.message;
             break;
         case "start":
+            isGameOver = false; // Reset cờ khi game mới bắt đầu
             myColor = data.color;
             currentBoardState = data.board;
             syncTimersFromServer(data); // Bắt đầu game, đồng bộ timer
             updateStatusText(); // Cập nhật status
             renderBoard(); // Vẽ bàn cờ
-
-            // *** CHỖ SỬA 3: Hiện nút đầu hàng ***
             resignButton.style.display = "block";
-            // *************************************
             break;
         case "game_update":
             // 1. Cập nhật bàn cờ
@@ -267,15 +278,18 @@ ws.onmessage = (event) => {
             break;
     }
 };
+
 ws.onclose = () => {
     console.log("Đã ngắt kết nối.");
     statusText.innerText = "Đã ngắt kết nối server!";
     handleGameOver(null, "disconnect"); // Dừng timer nếu rớt mạng
 };
+
 ws.onerror = (error) => {
     console.error("Lỗi WebSocket:", error);
     statusText.innerText = "Không thể kết nối đến server.";
 };
+
 // --- 6. Hàm Vẽ (Render) ---
 function renderBoard() {
     // Xóa quân cờ cũ và chấm cũ
@@ -283,6 +297,7 @@ function renderBoard() {
     validMoveDots.forEach(dot => dot.remove());
     validMoveDots = [];
     const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size'));
+
     // Chỉ vẽ lưới 1 lần (khi boardGrid rỗng)
     if (boardGrid.children.length === 0) {
         for (let r = 0; r < 10; r++) {
@@ -297,6 +312,7 @@ function renderBoard() {
             }
         }
     }
+
     // Vẽ quân cờ
     for (let r = 0; r < 10; r++) {
         for (let c = 0; c < 9; c++) {
@@ -309,21 +325,19 @@ function renderBoard() {
     }
 }
 
-// === (SỬA 2) Thay thế HOÀN TOÀN hàm createPieceElement ===
+// === Hàm tạo quân cờ (Đã sửa dùng ảnh) ===
 function createPieceElement(pieceString, row, col, cellSize) {
     const [colorPrefix, pieceName] = pieceString.split('_'); // Vd: "R", "Rook"
-    
+
     // Lấy tên file từ map
     const imageName = pieceImageMap[pieceName]; // Vd: "xe"
     // Lấy hậu tố màu
     const colorSuffix = (colorPrefix === 'R') ? 'r' : 'b'; // Vd: "r"
-    
+
     // Ghép lại thành class CSS, Vd: "xe_r"
     const pieceClassName = `${imageName}_${colorSuffix}`;
-
     const pieceElement = document.createElement('div');
     pieceElement.classList.add('piece'); // Class chung
-    
     if (imageName) {
         pieceElement.classList.add(pieceClassName); // Class riêng cho quân cờ
     } else {
@@ -334,29 +348,32 @@ function createPieceElement(pieceString, row, col, cellSize) {
     pieceElement.dataset.col = col;
 
     // Đặt quân cờ vào đúng vị trí giao điểm
-    // (Phần này giữ nguyên)
-    const x = col * cellSize;
-    const y = row * cellSize;
+    // ========================================================
+    // === 🎯 CHỖ SỬA 1: DỊCH CHUYỂN QUÂN CỜ VÀO GIỮA Ô ===
+    // ========================================================
+    // Tọa độ X = (cột * kích thước) + một nửa kích thước
+    const x = (col * cellSize) + (cellSize / 2);
+    // Tọa độ Y = (hàng * kích thước) + một nửa kích thước
+    const y = (row * cellSize) + (cellSize / 2);
+    // ========================================================
+
     pieceElement.style.left = `${x}px`;
     pieceElement.style.top = `${y}px`;
 
     // Bắt sự kiện click vào QUÂN CỜ
-    // (Phần này giữ nguyên)
     pieceElement.addEventListener('click', (e) => {
         e.stopPropagation(); // Ngăn click vào ô (intersection) bên dưới
         onCellClick(row, col);
     });
 
     // Highlight nếu đang được chọn
-    // (Phần này giữ nguyên)
     if (selectedPiecePos && selectedPiecePos[0] === row && selectedPiecePos[1] === col) {
         pieceElement.classList.add('selected');
     }
-    
     return pieceElement;
 }
-// ========================================================
 
+// ========================================================
 // Vẽ các chấm gợi ý nước đi
 function renderValidMoves(moves) {
     const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size'));
@@ -364,10 +381,17 @@ function renderValidMoves(moves) {
         const [r, c] = move;
         const dot = document.createElement('div');
         dot.classList.add('valid-move-dot');
-        const x = c * cellSize;
-        const y = r * cellSize;
+
+        // ========================================================
+        // === 🎯 CHỖ SỬA 2: DỊCH CHUYỂN CHẤM VÀO GIỮA Ô ===
+        // ========================================================
+        const x = (c * cellSize) + (cellSize / 2);
+        const y = (r * cellSize) + (cellSize / 2);
+        // ========================================================
+
         dot.style.left = `${x}px`;
         dot.style.top = `${y}px`;
+
         // Bắt sự kiện click vào CHẤM
         dot.addEventListener('click', (e) => {
             e.stopPropagation(); // Ngăn click vào ô bên dưới
@@ -377,12 +401,14 @@ function renderValidMoves(moves) {
         validMoveDots.push(dot); // Lưu lại để xóa
     });
 }
+
 // --- 7. Xử lý Logic Click (Quan trọng) ---
 function onCellClick(row, col) {
     // Nếu không phải lượt mình (hoặc game đã hết) thì không làm gì
     if (currentTurn !== myColor) {
         return;
     }
+
     const clickedPieceString = currentBoardState[row][col];
     // Kiểm tra xem ô vừa click có phải là quân của mình không
     const isMyPiece = clickedPieceString &&
@@ -391,12 +417,14 @@ function onCellClick(row, col) {
 
     if (selectedPiecePos) {
         // --- 1. ĐÃ CHỌN QUÂN, CLICK LẦN 2 ---
+
         // Click lại chính nó -> Bỏ chọn
         if (selectedPiecePos[0] === row && selectedPiecePos[1] === col) {
             selectedPiecePos = null;
             renderBoard(); // Xóa chấm, xóa highlight
             return;
         }
+
         // Click vào 1 quân khác của mình -> Đổi quân chọn
         if (isMyPiece) {
             selectedPiecePos = [row, col];
@@ -404,6 +432,7 @@ function onCellClick(row, col) {
             ws.send(JSON.stringify({ type: "get_moves", pos: [row, col] }));
             return;
         }
+
         // Click vào ô trống hoặc quân địch -> Thực hiện nước đi
         const moveData = {
             type: "move",
@@ -412,13 +441,10 @@ function onCellClick(row, col) {
         };
         ws.send(JSON.stringify(moveData));
         selectedPiecePos = null; // Xóa chọn sau khi gửi
-
         // Không renderBoard() ở đây, client PHẢI đợi "game_update" từ server
-        // để đảm bảo đồng bộ
 
     } else {
         // --- 2. CHƯA CHỌN QUÂN, CLICK LẦN 1 ---
-
         if (isMyPiece) {
             // Click vào quân của mình -> Chọn nó
             selectedPiecePos = [row, col];
@@ -427,16 +453,14 @@ function onCellClick(row, col) {
         }
     }
 }
+
 // --- 8. Hàm Phụ Trợ (Utils) ---
 // Cập nhật state bàn cờ (local)
-// Hàm này chỉ được gọi KHI nhận được tin "game_update"
 function updateBoardState(board, from, to) {
     const [r_from, c_from] = from;
     const [r_to, c_to] = to;
-
     // Phải deep copy mảng 2 chiều
     const newBoard = board.map(row => [...row]);
-
     newBoard[r_to][c_to] = newBoard[r_from][c_from];
     newBoard[r_from][c_from] = null; // EMPTY
     return newBoard;
